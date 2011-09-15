@@ -200,16 +200,22 @@ void StopFilter::fillStopTable(CLTCSetList* stopTable, const TCHAR** stopWords, 
   TCHAR* tmp;
 	if ( _ignoreCase ){
 		for (int32_t i = 0; stopWords[i]!=NULL; i++){
-      tmp = STRDUP_TtoT(stopWords[i]);
-      stringCaseFold(tmp);
-			stopTable->insert( tmp );
-    }
+			tmp = STRDUP_TtoT(stopWords[i]);
+			stringCaseFold(tmp);
+			if(stopTable->find(tmp) == stopTable->end())
+			{
+				stopTable->insert( tmp );	
+			}else{
+				_CLLDELETE(tmp);
+			}
+		}
 	}else{
-		for (int32_t i = 0; stopWords[i]!=NULL; i++){
-      tmp = STRDUP_TtoT(stopWords[i]);
-			stopTable->insert( tmp );
-    }
-  }
+		for (int32_t i = 0; stopWords[i]!=NULL; i++)
+		{
+			if(stopTable->find((TCHAR *) stopWords[i]) == stopTable->end())
+				stopTable->insert(STRDUP_TtoT(stopWords[i]));
+		}
+	}
 }
 
 Token* StopFilter::next(Token* token) {
