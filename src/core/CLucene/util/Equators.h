@@ -218,6 +218,16 @@ public:
 	};
 	
 	template<typename _kt>
+	class CLUCENE_INLINE_EXPORT rcObject : public AbstractDeletor{
+	public:
+		void Delete(void* obj){
+			doDelete((_kt*) obj);
+		}
+		static void doDelete(_kt* obj){
+			_CLLDECDELETE(obj);
+		}
+	};
+	template<typename _kt>
 	class CLUCENE_INLINE_EXPORT Object: public AbstractDeletor{
 	public:
 		void Delete(void* obj){
