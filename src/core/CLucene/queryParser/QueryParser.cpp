@@ -365,31 +365,34 @@ Query* QueryParser::getFieldQuery(const TCHAR* _field, TCHAR* queryText) {
       }else {
 		    MultiPhraseQuery* mpq = _CLNEW MultiPhraseQuery();
 		    mpq->setSlop(phraseSlop);
-		    CLArrayList<Term*> multiTerms;
+			CLArrayList<Term*, CL_NS(util)::Deletor::rcObject<Term> > multiTerms;
 		    int32_t position = -1;
 		    for (size_t i = 0; i < v.size(); i++) {
 			    t = v.at(i);
 			    if (t->getPositionIncrement() > 0 && multiTerms.size() > 0) {
-            ValueArray<Term*> termsArray(multiTerms.size());
-            multiTerms.toArray(termsArray.values);
+					ValueArray<Term*> termsArray(multiTerms.size());
+					multiTerms.toArray(termsArray.values);
 				    if (enablePositionIncrements) {
 					    mpq->add(&termsArray,position);
 				    } else {
 					    mpq->add(&termsArray);
 				    }
 				    multiTerms.clear();
+					
 			    }
 			    position += t->getPositionIncrement();
 			    multiTerms.push_back(_CLNEW Term(field, t->termBuffer()));
 		    }
-        ValueArray<Term*> termsArray(multiTerms.size());
-        multiTerms.toArray(termsArray.values);
-		    if (enablePositionIncrements) {
+
+			ValueArray<Term*> termsArray(multiTerms.size());
+			multiTerms.toArray(termsArray.values);
+			if (enablePositionIncrements) {
 			    mpq->add(&termsArray,position);
 		    } else {
 			    mpq->add(&termsArray);
 		    }
-		    return mpq;
+			
+			return mpq;
       }
     }else {
       PhraseQuery* pq = _CLNEW PhraseQuery();
