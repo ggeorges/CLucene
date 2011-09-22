@@ -889,7 +889,8 @@ void DocumentsWriter::ThreadState::FieldData::invertField(Field* field, Analyzer
       }
 
       // Tokenize field and add to postingTable
-      stream = analyzer->reusableTokenStream(fieldInfo->name, reader);
+      //stream = analyzer->reusableTokenStream(fieldInfo->name, reader); tuyan
+	  stream = analyzer->tokenStream(fieldInfo->name, reader);
     }
 
     // reset the TokenStream to the first token
@@ -943,6 +944,7 @@ void DocumentsWriter::ThreadState::FieldData::invertField(Field* field, Analyzer
       offset = offsetEnd+1;
     } _CLFINALLY (
       stream->close(); //don't delete, this stream is re-used
+	  _CLDELETE(stream); // tuyan
     )
   }
 
